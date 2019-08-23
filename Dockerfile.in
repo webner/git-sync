@@ -29,5 +29,13 @@ RUN apt-get update \
 RUN echo "git-sync:x:65533:65533::/tmp:/sbin/nologin" >> /etc/passwd
 
 WORKDIR /tmp
+ENV HOME=/tmp
+
+
+COPY uid_entrypoint /
+
+RUN chgrp -R 0 /tmp && \
+    chmod -R g=u /tmp /etc/passwd
+
 USER git-sync:nogroup
-ENTRYPOINT ["/{ARG_BIN}"]
+ENTRYPOINT ["/uid_entrypoint", "/{ARG_BIN}"]
